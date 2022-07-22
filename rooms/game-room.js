@@ -6,7 +6,9 @@ const state_1 = require("../state");
 const schema_1 = require("@colyseus/schema");
 class GameRoom extends colyseus_1.Room {
     onEntityUpdate(client, updateData) {
+        updateData.networkId = client.id;
         updateData.target = { except: client };
+        // console.log(updateData);
         this.broadcast("onEntityUpdate", updateData, updateData.target == 0 ? {} : { except: client });
         // console.log("entity update ", client.id ," update data ", updateData)
     }
@@ -17,8 +19,7 @@ class GameRoom extends colyseus_1.Room {
         roomState.networkedEntities = new schema_1.MapSchema();
         this.setState(roomState);
         this.onMessage("entityUpdate", (client, entityUpdateArray) => {
-            if (this.state.networkedEntities.has(`${entityUpdateArray[0]}`) === false)
-                return;
+            //if (this.state.networkedEntities.has(`${entityUpdateArray[0]}`) === false) return;
             this.onEntityUpdate(client, entityUpdateArray);
         });
     }
